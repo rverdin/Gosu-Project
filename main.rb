@@ -7,65 +7,70 @@ include Gosu
 class Game < Gosu::Window
   def initialize
     super(800, 600, false)
+    # Background / Menu
     @cursor = Gosu::Image.new(self, 'media/cursor.png')
     @menu = Background.new(self, 'media\\menu.png')
     @title = Sprite.new(self, 'media\\title.png')
-    #character
-    @stand_left = Sprite.new(self,'media\\Character\\stand_left.png')
-    @stand_right = Sprite.new(self,'media\\Character\\stand_right.png')
-    @walk_left = Sprite.new(self,'media\\Character\\walk_left.png')
-    @walk_right = Sprite.new(self,'media\\Character\\walk_right.png')
-    @shoot_left = Sprite.new(self,'media\\Character\\shooting_left.png')
-    @shoot_right = Sprite.new(self,'media\\Character\\shooting_right.png') 
+    # Character
+    @stand_left = Sprite.new(self,'media\\Character/stand_left.png')
+    @stand_right = Sprite.new(self,'media\\Character/stand_right.png')
+    @walk_left = Sprite.new(self,'media\\Character/walk_left.png')
+    @walk_right = Sprite.new(self,'media\\Character/walk_right.png')
+    @shoot_left = Sprite.new(self,'media\\Character/shooting_left.png')
+    @shoot_right = Sprite.new(self,'media\\Character/shooting_right.png') 
     @stand_right.move_to(350, 445)
     @sprite = @stand_right
-    #$game_start = false
-    $score = 0
-    $window = self
-    self.caption = "Zombie Shooter - Alpha - 0.0.1"
+    # Game Detection
+    @score = 0
+    # Game Caption
+    self.caption = "Zombie Shooter - Alpha - 0.1.0"
   end
 
   def update
-    if button_down?(KbReturn)
-      $game_start = true
+    # Start Game
+    if button_down? KbReturn
+      @game_start = true
       @title.hide
     end
-     if $game_start == true
-      if @dir == :left then
-        @stand_left.move_to(@sprite.x,@sprite.y)
-        @sprite = @stand_left
-      elsif @dir == :right then
-        @stand_right.move_to(@sprite.x,@sprite.y)
-        @sprite = @stand_right
-      end
-      if button_down?(KbD)
-        @sprite.adjust_xpos 4 
-        @walk_right.move_to(@sprite.x,@sprite.y)
-        @sprite = @walk_right
-        @dir = :right
-      elsif button_down?(KbA)
-        @sprite.adjust_xpos -4
-        @walk_left.move_to(@sprite.x,@sprite.y)
-        @sprite = @walk_left
-        @dir = :left
-      elsif button_down?(KbW)
-        @sprite.adjust_ypos(-10)
-      elsif button_down?(KbSpace)and @dir == :left
-          @shoot_left.move_to(@sprite.x, @sprite.y) #necessary because else would move back since edge is different
-        @sprite = @shoot_left
-      elsif button_down?(KbSpace)and @dir == :right
-        @shoot_right.move_to(@sprite.x, @sprite.y)
-        @sprite = @shoot_right
-      end
-     end
+   # Updates Sprites (Since they won't show without being called on, you can always update them)
+   if $game_start
+    @stand_left.move_to(@sprite.x,@sprite.y)
+    @stand_right.move_to(@sprite.x,@sprite.y)
+    @walk_right.move_to(@sprite.x,@sprite.y)
+    @walk_left.move_to(@sprite.x,@sprite.y)
+    @shoot_left.move_to(@sprite.x, @sprite.y)
+    @shoot_right.move_to(@sprite.x, @sprite.y)
+    if @dir == :left then
+      @sprite = @stand_left
+    elsif @dir == :right then
+      @sprite = @stand_right
+    end
+    # Movement
+    if button_down? KbD
+      @sprite.adjust_xpos 4
+      @sprite = @walk_right
+      @dir = :right
+    elsif button_down? KbA
+      @sprite.adjust_xpos -4
+      @sprite = @walk_left
+      @dir = :left
+    elsif button_down? KbW
+      @sprite.adjust_ypos -10 # Idk why we need this?
+    elsif button_down? KbSpace and @dir == :left
+      @sprite = @shoot_left
+    elsif button_down? KbSpace and @dir == :right
+      @sprite = @shoot_right
+    end
+   end
+   #END
   end
   
   
   def draw
     @menu.see(0,0,0,1,1.25)
     @title.draw
-    @cursor.draw(self.mouse_x, self.mouse_y, 0)
     @sprite.draw
+    @cursor.draw(self.mouse_x, self.mouse_y, 0) # Cursor always on top
   end
   
   
