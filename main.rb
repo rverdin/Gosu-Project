@@ -33,7 +33,7 @@ class Game < Gosu::Window
       @title.hide
     end
    # Updates Sprites (Since they won't show without being called on, you can always update them)
-   if $game_start
+   if @game_start
     @stand_left.move_to(@sprite.x,@sprite.y)
     @stand_right.move_to(@sprite.x,@sprite.y)
     @walk_right.move_to(@sprite.x,@sprite.y)
